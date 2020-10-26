@@ -4,6 +4,7 @@ import orderingProducts.dto.OrdersDto;
 import orderingProducts.dto.ProductDto;
 import orderingProducts.dto.UserDto;
 import orderingProducts.exceptions.ItemNotFoundException;
+import orderingProducts.repository.OrdersRepository;
 import orderingProducts.repository.UserRepository;
 import orderingProducts.service.OrdersService;
 import orderingProducts.service.UserService;
@@ -20,6 +21,7 @@ public class MenuController {
 
     private UserService userService = new UserService();
     private OrdersService ordersService = new OrdersService();
+    private OrdersRepository ordersRepository = new OrdersRepository();
 
     public void start() {
         String in = "";
@@ -114,7 +116,7 @@ public class MenuController {
                         orders(id);
                         break;
                     case "2":
-                        newOrder();
+                        newOrder(id);
                         break;
                     case "e":
 
@@ -139,19 +141,31 @@ public class MenuController {
     }
 
 
-    private void newOrder() throws SQLException {
+    private void newOrder(int idUser) throws SQLException {
         try {
             System.out.println("-------------------------\nОформление нового заказа:\n-------------------------");
             System.out.println("-------------------------\nСписок доступных товаров:\n-------------------------");
             ArrayList<ProductDto> arr = ordersService.getProducts();
+            ArrayList<ProductDto> arrNewOrder = new ArrayList<>();
+            OrdersDto newOrder = new OrdersDto();
             System.out.println(arr.toString());
+
+
+            int numberOrder = ordersRepository.getNumberOrder(idUser);  //напрямую через репрозиторий тк смысла нет через сервис
+
 
             String in = "";
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             while (!"e".equals(in)) {
-                System.out.println("Введите id товара, для завершения заказа нажмите 'e'");
+                System.out.println("Введите id товара и количество (через пробел), для завершения заказа нажмите 'e'");
                 in = reader.readLine();
                 if (!"e".equals(in)){
+                    String [] split = in.split(" ");
+                    int idProduct = Integer.parseInt(split[0]);
+                    int quantity = Integer.parseInt(split[1]);
+
+                    ordersRepository.newOrder(numberOrder,idProduct,quantity);
+
 
                 }
             }
@@ -159,11 +173,9 @@ public class MenuController {
 
         } catch (SQLException | ItemNotFoundException | IOException e) {
             e.printStackTrace();
+        } catch (RuntimeException e){
+            System.err.println("Невалидный ввод");
         }
-//        while (!"e".equals(in)) {
-//            try {
-//
-//            }
-//        }
+
     }
 }

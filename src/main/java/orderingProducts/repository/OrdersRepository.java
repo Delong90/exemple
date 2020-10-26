@@ -97,12 +97,43 @@ public class OrdersRepository {
             Product product = new Product(id, title, cost);
             arr.add(product);
         }
-
-
-
         return arr;
     }
 
+
+    public Integer getNumberOrder(int idUser) throws SQLException{
+        int numberOrder = 0;
+        PreparedStatement preparedStatement =
+                getConnection().prepareStatement("SELECT id_orders FROM orders;");
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()) {
+            numberOrder += 1;
+        }
+    numberOrder += 1;
+        String query = "insert into orders value (null, ?);";
+        PreparedStatement preparedStatement2 =
+                getConnection().prepareStatement(query);
+        preparedStatement2.setInt(1, idUser);
+
+        preparedStatement2.executeUpdate();
+        return numberOrder;
     }
+
+    public void newOrder(int numberOrder, int idProduct, int quantity) throws SQLException{
+        String query = "insert into order_items value ( ?, ?, ?);";
+        PreparedStatement preparedStatement =
+                getConnection().prepareStatement(query);
+        preparedStatement.setInt(1, numberOrder);
+        preparedStatement.setInt(2, idProduct);
+        preparedStatement.setInt(3, quantity);
+
+        preparedStatement.executeUpdate();
+
+
+    }
+}
+
+
 
 
