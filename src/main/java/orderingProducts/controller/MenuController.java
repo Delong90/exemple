@@ -8,6 +8,7 @@ import orderingProducts.repository.OrdersRepository;
 import orderingProducts.repository.UserRepository;
 import orderingProducts.service.OrdersService;
 import orderingProducts.service.UserService;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -146,8 +147,6 @@ public class MenuController {
             System.out.println("-------------------------\nОформление нового заказа:\n-------------------------");
             System.out.println("-------------------------\nСписок доступных товаров:\n-------------------------");
             ArrayList<ProductDto> arr = ordersService.getProducts();
-            ArrayList<ProductDto> arrNewOrder = new ArrayList<>();
-            OrdersDto newOrder = new OrdersDto();
             System.out.println(arr.toString());
 
 
@@ -157,24 +156,26 @@ public class MenuController {
             String in = "";
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             while (!"e".equals(in)) {
+                try{
                 System.out.println("Введите id товара и количество (через пробел), для завершения заказа нажмите 'e'");
                 in = reader.readLine();
-                if (!"e".equals(in)){
-                    String [] split = in.split(" ");
+                if (!"e".equals(in)) {
+                    String[] split = in.split(" ");
                     int idProduct = Integer.parseInt(split[0]);
                     int quantity = Integer.parseInt(split[1]);
+                    int exceptionNull = idProduct/quantity;
 
-                    ordersRepository.newOrder(numberOrder,idProduct,quantity);
-
-
+                    ordersRepository.newOrder(numberOrder, idProduct, quantity);
                 }
+                } catch (SQLException | RuntimeException e){
+                    System.err.println("Невалидный ввод");
+                }
+
             }
 
 
         } catch (SQLException | ItemNotFoundException | IOException e) {
             e.printStackTrace();
-        } catch (RuntimeException e){
-            System.err.println("Невалидный ввод");
         }
 
     }

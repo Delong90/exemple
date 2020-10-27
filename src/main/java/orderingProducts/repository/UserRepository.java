@@ -43,27 +43,6 @@ public class UserRepository {
 
     public User newUser(String inName, String inPassword) throws SQLException{
         String inPasswordHex = DigestUtils.sha256Hex(inPassword);
-//        String query = String.format("insert into users value (null, '%s', '%s')",
-//                inName,
-//                inPasswordHex);
-//        Connection connection = getConnection();
-//        Statement statement = connection.createStatement();
-//        statement.execute(query);
-
-
-//        String query = String.format("insert into users value (null, '%s', '%s')",
-//                inName,
-//                inPasswordHex);
-//
-//        PreparedStatement preparedStatement =
-//                getConnection().prepareStatement("insert into users value (null,?,?);");
-//        preparedStatement.setString(1, inName);
-//        preparedStatement.setString(2, inPasswordHex);
-//
-//
-//
-//        preparedStatement.execute(query);
-
 
         String query = "insert into users value (null, ?, ?);";
         PreparedStatement preparedStatement =
